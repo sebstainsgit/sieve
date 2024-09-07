@@ -1,4 +1,4 @@
-# Times to expect:
+# Times to expect for multiple files:
 
 # n = 1 - 1000 doesn't matter at all
 n = 10000000: 0.434 seconds

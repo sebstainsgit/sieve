@@ -97,7 +97,7 @@ func createPath() {
 
 func setAndParseFlags() (int, int, bool, bool) {
 	checkUpTo := flag.Int("n", 1000000000, "Assigns the upper bound of numbers you want to search")
-	primesInAFile := flag.Int("inaf", 5000000, "Dictates how many primes are in a file",)
+	primesInAFile := flag.Int("inaf", 5000000, "Dictates how many primes are in a file")
 	noStats := flag.Bool("nostats", false, "Determines whether you want stats to be shown at the end of the search")
 	oneFile := flag.Bool("onef", false, "States whether you want the primes in one file or in many files")
 	flag.Parse()
@@ -115,9 +115,13 @@ func main() {
 		return
 	}
 
+	fmt.Println("Sieve started")
+
 	primes := sieve(n)
 
 	sieveTime := time.Since(start)
+
+	fmt.Println("Sieve ended")
 
 	createPath()
 
@@ -125,21 +129,22 @@ func main() {
 
 	if oneFile {
 		writeToFile(primes)
+		filesCreated = 1
 	} else {
 		var rangePrimes []int
 
 		var wg sync.WaitGroup
-	
+
 		if len(primes)%primesInAFile == 0 {
 			filesCreated = len(primes) / primesInAFile
 		} else {
 			filesCreated = len(primes)/primesInAFile + 1
 		}
-	
+
 		wg.Add(filesCreated)
-	
+
 		l := len(primes) - 1
-	
+
 		for i := 0; i < l; i += primesInAFile {
 			if i+primesInAFile > l {
 				rangePrimes = primes[i:]
@@ -149,7 +154,7 @@ func main() {
 			//i+1 is done so there is no such file as primes-0, which looks bad and that
 			go writeToFiles(i/primesInAFile+1, rangePrimes, &wg)
 		}
-	
+
 		wg.Wait()
 	}
 
