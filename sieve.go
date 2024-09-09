@@ -89,9 +89,7 @@ func writeToFiles(order int, rangePrimes []int, wg *sync.WaitGroup) {
 }
 
 func createPath() {
-	fmt.Println("Deleting ./primes directory if exists")
 	os.RemoveAll("./primes")
-	fmt.Print("Creating empty ./primes directory \n\n")
 	os.Mkdir("./primes", os.FileMode(0775))
 }
 
@@ -115,13 +113,9 @@ func main() {
 		return
 	}
 
-	fmt.Println("Sieve started")
-
 	primes := sieve(n)
 
 	sieveTime := time.Since(start)
-
-	fmt.Println("Sieve ended")
 
 	createPath()
 
@@ -151,7 +145,7 @@ func main() {
 			} else {
 				rangePrimes = primes[i : i+primesInAFile]
 			}
-			//i+1 is done so there is no such file as primes-0, which looks bad and that
+			//i/primesInAFile +1 is done so there is no such file as primes-0, which looks bad
 			go writeToFiles(i/primesInAFile+1, rangePrimes, &wg)
 		}
 
