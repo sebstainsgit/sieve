@@ -95,7 +95,7 @@ func createPath() {
 
 func setAndParseFlags() (int, int, bool, bool) {
 	checkUpTo := flag.Int("n", 1000000000, "Assigns the upper bound of numbers you want to search")
-	primesInAFile := flag.Int("inaf", 5000000, "Dictates how many primes are in a file")
+	primesInAFile := flag.Int("inaf", 5000000, "Sets how many primes are in a file")
 	noStats := flag.Bool("nostats", false, "Determines whether you want stats to be shown at the end of the search")
 	oneFile := flag.Bool("onef", false, "States whether you want the primes in one file or in many files")
 	flag.Parse()
@@ -109,8 +109,10 @@ func main() {
 	start := time.Now()
 
 	if n < 2 {
-		fmt.Println("Invalid upper bound, too low")
+		fmt.Println("Invalid upper bound, no primes can be found in that range")
 		return
+	} else if n == 2 {
+		fmt.Println("2 is not valid upper bound, there are no integers between 2 and 2")
 	}
 
 	primes := sieve(n)
@@ -121,6 +123,8 @@ func main() {
 
 	var filesCreated int
 
+	l := len(primes) - 1
+
 	if oneFile {
 		writeToFile(primes)
 		filesCreated = 1
@@ -130,14 +134,12 @@ func main() {
 		var wg sync.WaitGroup
 
 		if len(primes)%primesInAFile == 0 {
-			filesCreated = len(primes) / primesInAFile
+			filesCreated = len(primes) / primesInAFile //Edge case in which there are exactly (primes in a file) primes in the last file
 		} else {
 			filesCreated = len(primes)/primesInAFile + 1
 		}
 
 		wg.Add(filesCreated)
-
-		l := len(primes) - 1
 
 		for i := 0; i < l; i += primesInAFile {
 			if i+primesInAFile > l {
@@ -145,7 +147,7 @@ func main() {
 			} else {
 				rangePrimes = primes[i : i+primesInAFile]
 			}
-			//i/primesInAFile +1 is done so there is no such file as primes-0, which looks bad
+			// i/primesInAFile + 1 is done so there is no such file as primes-0, which looks bad
 			go writeToFiles(i/primesInAFile+1, rangePrimes, &wg)
 		}
 
@@ -162,6 +164,6 @@ func main() {
 		fmt.Println("Numbers searched: ", n)
 		fmt.Println("Files created: ", filesCreated)
 		fmt.Println("Primes in a file: ", primesInAFile)
-		fmt.Println("Largest prime found: ", primes[len(primes)-1])
+		fmt.Println("Largest prime found: ", primes[l])
 	}
 }
