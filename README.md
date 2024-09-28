@@ -46,9 +46,9 @@ Number given being upper bound (-n), time taken being an average of 5 runs.
 - **1 to 10 million** is consistently less than a second so I thought it would be unneccesary to include. \
 - **100 million**: 2.6 seconds \
 - **1 billion**: 17.6 seconds \
-- **10 billion**: 200.2 seconds\
+- **10 billion**: 200.2 seconds \
 **Note**: for the 10 billion mean, I ommitted a run which took 233s in the mean calculation becuase it was very different from the rest. Notably, that particular run was the first, so when you run the program and in what context (after doing what) likely affects the run time quite a lot.
 # My specs:
 
-- **RAM**: 32 GB of DDR4 ram
-- **CPU**: Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz
+- **RAM**: 32 GB of DDR4 RAM \
+- **CPU**: Intel(R) Core(TM) i7-7700HQ CPU @ 2.80GHz \
