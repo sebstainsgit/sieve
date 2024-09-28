@@ -13,6 +13,7 @@ import (
 )
 
 func sieve(n int) []int {
+	//Returns the upper limit of prime numbers to search for
 	searchLim := math.Sqrt(float64(n)) + 1
 
 	primeBool := make([]bool, n+1)
@@ -31,7 +32,7 @@ func sieve(n int) []int {
 		}
 	}
 
-	for i := 2; i < len(primeBool); i++ {
+	for i := 2; i < n+1; i++ {
 		if primeBool[i] {
 			primes = append(primes, i)
 		}
@@ -40,7 +41,8 @@ func sieve(n int) []int {
 	return primes
 }
 
-func writeToFile(primes []int) {
+// Can be rewritten to remove lensub1, only done to reduce waste
+func writeToFile(primes []int, lensub1 int) {
 	f, err := os.OpenFile("primes/all-primes", os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.FileMode(0644))
 
 	if err != nil {
@@ -51,9 +53,9 @@ func writeToFile(primes []int) {
 
 	writ := bufio.NewWriter(f)
 
-	fmt.Fprintln(f, "Primes in this file:", len(primes))
+	fmt.Fprintln(f, "Primes in this file:", lensub1+1)
 
-	fmt.Fprintln(f, fmt.Sprint("Largest: ", primes[len(primes)-1], "\n"))
+	fmt.Fprintln(f, fmt.Sprint("Largest: ", primes[lensub1], "\n"))
 
 	for i := range primes {
 		fmt.Fprint(writ, fmt.Sprint(primes[i], ", "))
@@ -123,20 +125,21 @@ func main() {
 
 	var filesCreated int
 
+	//Reduces wasted computation (primes array can be very big, recalculating len is unecessary)
 	l := len(primes) - 1
 
 	if oneFile {
-		writeToFile(primes)
+		writeToFile(primes, l)
 		filesCreated = 1
 	} else {
 		var rangePrimes []int
 
 		var wg sync.WaitGroup
 
-		if len(primes)%primesInAFile == 0 {
-			filesCreated = len(primes) / primesInAFile //Edge case in which there are exactly (primes in a file) primes in the last file
+		if (l+1)%primesInAFile == 0 {
+			filesCreated = (l + 1) / primesInAFile //Edge case in which there are exactly (primes in a file) primes in the last file
 		} else {
-			filesCreated = len(primes)/primesInAFile + 1
+			filesCreated = (l+1)/primesInAFile + 1
 		}
 
 		wg.Add(filesCreated)
@@ -160,7 +163,7 @@ func main() {
 		fmt.Println("Total time elapsed: ", end, "seconds")
 		fmt.Println("Time taken for sieve: ", sieveTime.Seconds(), "seconds")
 		fmt.Println("Time taken for file I/O: ", end-sieveTime.Seconds(), "seconds")
-		fmt.Println("Primes found: ", len(primes))
+		fmt.Println("Primes found: ", l+1)
 		fmt.Println("Numbers searched: ", n)
 		fmt.Println("Files created: ", filesCreated)
 		fmt.Println("Primes in a file: ", primesInAFile)
