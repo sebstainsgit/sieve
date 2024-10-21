@@ -7,7 +7,7 @@ This tool generates prime numbers up to a specified upper bound using the **Siev
 ## Features
 
 - **Efficient Prime Calculation**: Uses the Sieve of Eratosthenes algorithm to calculate primes up to a user-specified limit.
-- **File Output Options**: Save primes either in a single file or distribute them across multiple files.
+- **File Output Options**: Saves primes either in a single file or distributes them across multiple files.
 - **Performance Statistics**: Optionally outputs statistics, including the time taken for computation and file I/O.
 - **Concurrency**: Supports concurrent file writing for better performance when generating multiple files.
 
@@ -49,7 +49,8 @@ Number given being upper bound (-n), time taken being an average of 5 runs.
 - **1 billion**: 17.6 seconds. 
 - **10 billion**: 200.2 seconds.
 
-**Note**: for the 10 billion mean, I ommitted a run which took 233s in the mean calculation becuase it was very different from the rest. Notably, that particular run was the first, so when you run the program and in what context (after doing what) likely affects the run time quite a lot.
+**Note**: for one of the previous 10 billion mean calculations, I omitted a run which took 233s in the final calculation becuase it was anomalous. Notably, that particular run was the first, so when you run the program and in what context (after doing what) likely affects the time taken quite a lot.
+
 # My specs:
 
 - **RAM**: 32 GB of DDR4 RAM  
