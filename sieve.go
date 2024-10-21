@@ -43,7 +43,9 @@ func sieve(n int) []int {
 
 // Can be rewritten to remove lensub1, only done to reduce wasted len()
 func writeToFile(primes []int, lensub1 int) {
-	f, err := os.OpenFile("primes/all-primes", os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.FileMode(0644))
+	fileName := "./onef-primes/onef-primes.txt"
+
+	f, err := os.OpenFile(fileName, os.O_CREATE|os.O_RDWR|os.O_TRUNC, os.FileMode(0644))
 
 	if err != nil {
 		log.Fatal(err)
@@ -90,17 +92,24 @@ func writeToFiles(order int, rangePrimes []int, wg *sync.WaitGroup) {
 	writ.Flush()
 }
 
-func createPath() {
-	err := os.RemoveAll("./primes")
-
-	if err != nil {
-		log.Printf("Error removing directory 'primes': %s", err)
+func createPath(onef bool) {
+	var dirName string
+	if onef {
+		dirName = "./onef-primes"
+	} else {
+		dirName = "./primes"
 	}
 
-	err = os.Mkdir("./primes", os.FileMode(0775))
+	err := os.RemoveAll(dirName)
 
 	if err != nil {
-		log.Printf("Error creating directory 'primes': %s", err)
+		log.Printf("Error removing directory '%s': %s", dirName, err)
+	}
+
+	err = os.Mkdir(dirName, os.FileMode(0775))
+
+	if err != nil {
+		log.Printf("Error creating directory '%s': %s", dirName, err)
 	}
 }
 
@@ -131,7 +140,7 @@ func main() {
 
 	sieveTime := time.Since(start).Seconds()
 
-	createPath()
+	createPath(oneFile)
 
 	var filesCreated int
 
@@ -147,9 +156,9 @@ func main() {
 		var wg sync.WaitGroup
 
 		if (l+1)%primesInAFile == 0 {
-			filesCreated = (l + 1) / primesInAFile //Edge case in which there are exactly (primes in a file) primes in the last file
+			filesCreated = (l + 1) / primesInAFile //Edge case in which there are exactly (primes in a file) primes to be written to the last file
 		} else {
-			filesCreated = (l + 1)/primesInAFile + 1
+			filesCreated = (l+1)/primesInAFile + 1
 		}
 
 		wg.Add(filesCreated)
